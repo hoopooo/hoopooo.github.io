@@ -1,0 +1,175 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>黑马点评Day2 缓存 | Hoopooo's Blog</title><meta name="author" content="Hoopooo"><meta name="copyright" content="Hoopooo"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="商户查询缓存  缓存更新策略  主动更新策略    缓存穿透  缓存雪崩 缓存击穿">
+<meta property="og:type" content="article">
+<meta property="og:title" content="黑马点评Day2 缓存">
+<meta property="og:url" content="https://hoopooo.github.io/2025/03/18/%E7%BC%93%E5%AD%98/index.html">
+<meta property="og:site_name" content="Hoopooo&#39;s Blog">
+<meta property="og:description" content="商户查询缓存  缓存更新策略  主动更新策略    缓存穿透  缓存雪崩 缓存击穿">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://picsum.photos/1920/1080">
+<meta property="article:published_time" content="2025-03-18T05:29:42.000Z">
+<meta property="article:modified_time" content="2025-03-18T09:56:02.986Z">
+<meta property="article:author" content="Hoopooo">
+<meta property="article:tag" content="Hoopooo, Blog, 博客">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://picsum.photos/1920/1080"><script type="application/ld+json">{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "黑马点评Day2 缓存",
+  "url": "https://hoopooo.github.io/2025/03/18/%E7%BC%93%E5%AD%98/",
+  "image": "https://picsum.photos/1920/1080",
+  "datePublished": "2025-03-18T05:29:42.000Z",
+  "dateModified": "2025-03-18T09:56:02.986Z",
+  "author": [
+    {
+      "@type": "Person",
+      "name": "Hoopooo",
+      "url": "https://hoopooo.github.io/"
+    }
+  ]
+}</script><link rel="shortcut icon" href="/img/favicon.png"><link rel="canonical" href="https://hoopooo.github.io/2025/03/18/%E7%BC%93%E5%AD%98/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css"><script>
+    (() => {
+      
+    const saveToLocal = {
+      set: (key, value, ttl) => {
+        if (!ttl) return
+        const expiry = Date.now() + ttl * 86400000
+        localStorage.setItem(key, JSON.stringify({ value, expiry }))
+      },
+      get: key => {
+        const itemStr = localStorage.getItem(key)
+        if (!itemStr) return undefined
+        const { value, expiry } = JSON.parse(itemStr)
+        if (Date.now() > expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return value
+      }
+    }
+
+    window.btf = {
+      saveToLocal,
+      getScript: (url, attr = {}) => new Promise((resolve, reject) => {
+        const script = document.createElement('script')
+        script.src = url
+        script.async = true
+        Object.entries(attr).forEach(([key, val]) => script.setAttribute(key, val))
+        script.onload = script.onreadystatechange = () => {
+          if (!script.readyState || /loaded|complete/.test(script.readyState)) resolve()
+        }
+        script.onerror = reject
+        document.head.appendChild(script)
+      }),
+      getCSS: (url, id) => new Promise((resolve, reject) => {
+        const link = document.createElement('link')
+        link.rel = 'stylesheet'
+        link.href = url
+        if (id) link.id = id
+        link.onload = link.onreadystatechange = () => {
+          if (!link.readyState || /loaded|complete/.test(link.readyState)) resolve()
+        }
+        link.onerror = reject
+        document.head.appendChild(link)
+      }),
+      addGlobalFn: (key, fn, name = false, parent = window) => {
+        if (!false && key.startsWith('pjax')) return
+        const globalFn = parent.globalFn || {}
+        globalFn[key] = globalFn[key] || {}
+        globalFn[key][name || Object.keys(globalFn[key]).length] = fn
+        parent.globalFn = globalFn
+      }
+    }
+  
+      
+      const activateDarkMode = () => {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      const activateLightMode = () => {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+
+      btf.activateDarkMode = activateDarkMode
+      btf.activateLightMode = activateLightMode
+
+      const theme = saveToLocal.get('theme')
+    
+          theme === 'dark' ? activateDarkMode() : theme === 'light' ? activateLightMode() : null
+        
+      
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        document.documentElement.classList.toggle('hide-aside', asideStatus === 'hide')
+      }
+    
+      
+    const detectApple = () => {
+      if (/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)) {
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+  
+    })()
+  </script><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: undefined,
+  localSearch: undefined,
+  translate: undefined,
+  highlight: {"plugin":"highlight.js","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false,"highlightFullpage":false,"highlightMacStyle":false},
+  copy: {
+    success: '复制成功',
+    error: '复制失败',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  dateSuffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'null',
+  Snackbar: undefined,
+  infinitegrid: {
+    js: 'https://cdn.jsdelivr.net/npm/@egjs/infinitegrid/dist/infinitegrid.min.js',
+    buttonText: '加载更多'
+  },
+  isPhotoFigcaption: false,
+  islazyloadPlugin: false,
+  isAnchor: false,
+  percent: {
+    toc: false,
+    rightside: false,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: '黑马点评Day2 缓存',
+  isHighlightShrink: true,
+  isToc: true,
+  pageType: 'post'
+}</script><meta name="generator" content="Hexo 7.3.0"></head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img text-center"><img src="/img/avatar.png" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="site-data text-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">7</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">3</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">0</div></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 主页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 归档</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fas fa-list"></i><span> 链接</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/link/"><i class="fa-fw fas fa-link"></i><span> 友情链接</span></a></li><li><a class="site-page child" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于</span></a></li></ul></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url(https://picsum.photos/1920/1080);"><nav id="nav"><span id="blog-info"><a class="nav-site-title" href="/"><span class="site-name">Hoopooo's Blog</span></a><a class="nav-page-title" href="/"><span class="site-name">黑马点评Day2 缓存</span></a></span><div id="menus"><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 主页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 归档</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fas fa-list"></i><span> 链接</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/link/"><i class="fa-fw fas fa-link"></i><span> 友情链接</span></a></li><li><a class="site-page child" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于</span></a></li></ul></div></div><div id="toggle-menu"><span class="site-page"><i class="fas fa-bars fa-fw"></i></span></div></div></nav><div id="post-info"><h1 class="post-title">黑马点评Day2 缓存</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2025-03-18T05:29:42.000Z" title="发表于 2025-03-18 13:29:42">2025-03-18</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2025-03-18T09:56:02.986Z" title="更新于 2025-03-18 17:56:02">2025-03-18</time></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title=""><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">浏览量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="container post-content" id="article-container"><h2 id="商户查询缓存"><a href="#商户查询缓存" class="headerlink" title="商户查询缓存"></a>商户查询缓存</h2><p><img src="https://img-for-hoopooo.oss-cn-beijing.aliyuncs.com/image-20250318135152302.png" alt="image-20250318135152302"></p>
+<p><img src="https://img-for-hoopooo.oss-cn-beijing.aliyuncs.com/image-20250318134457409.png" alt="image-20250318134457409"></p>
+<h3 id="缓存更新策略"><a href="#缓存更新策略" class="headerlink" title="缓存更新策略"></a>缓存更新策略</h3><p><img src="https://img-for-hoopooo.oss-cn-beijing.aliyuncs.com/image-20250318140745422.png" alt="image-20250318140745422"></p>
+<ul>
+<li>主动更新策略</li>
+</ul>
+<p><img src="https://img-for-hoopooo.oss-cn-beijing.aliyuncs.com/image-20250318143158420.png" alt="image-20250318143158420"></p>
+<p><img src="https://img-for-hoopooo.oss-cn-beijing.aliyuncs.com/image-20250318143931703.png" alt="image-20250318143931703"></p>
+<h3 id="缓存穿透"><a href="#缓存穿透" class="headerlink" title="缓存穿透"></a>缓存穿透</h3><p><img src="https://img-for-hoopooo.oss-cn-beijing.aliyuncs.com/image-20250318150459122.png" alt="image-20250318150459122"></p>
+<p><img src="https://img-for-hoopooo.oss-cn-beijing.aliyuncs.com/image-20250318151431141.png" alt="image-20250318151431141"></p>
+<h3 id="缓存雪崩"><a href="#缓存雪崩" class="headerlink" title="缓存雪崩"></a>缓存雪崩</h3><p><img src="https://img-for-hoopooo.oss-cn-beijing.aliyuncs.com/image-20250318155049889.png" alt="image-20250318155049889"></p>
+<h3 id="缓存击穿"><a href="#缓存击穿" class="headerlink" title="缓存击穿"></a>缓存击穿</h3><p><img src="https://img-for-hoopooo.oss-cn-beijing.aliyuncs.com/image-20250318162847292.png" alt="image-20250318162847292"></p>
+<p><img src="https://img-for-hoopooo.oss-cn-beijing.aliyuncs.com/image-20250318162956429.png" alt="image-20250318162956429"></p>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta"><i class="fas fa-circle-user fa-fw"></i>文章作者: </span><span class="post-copyright-info"><a href="https://hoopooo.github.io">Hoopooo</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta"><i class="fas fa-square-arrow-up-right fa-fw"></i>文章链接: </span><span class="post-copyright-info"><a href="https://hoopooo.github.io/2025/03/18/%E7%BC%93%E5%AD%98/">https://hoopooo.github.io/2025/03/18/%E7%BC%93%E5%AD%98/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta"><i class="fas fa-circle-exclamation fa-fw"></i>版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来源 <a href="https://hoopooo.github.io" target="_blank">Hoopooo's Blog</a>！</span></div></div><div class="tag_share"><div class="post-share"><div class="social-share" data-image="https://picsum.photos/1920/1080" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><a class="pagination-related full-width" href="/2025/03/15/%E9%BB%91%E9%A9%AC%E7%82%B9%E8%AF%84%E9%A1%B9%E7%9B%AEDay1/" title="黑马点评项目Day1"><img class="cover" src="https://picsum.photos/1920/1080" onerror="onerror=null;src='/img/404.jpg'" alt="cover of previous post"><div class="info"><div class="info-1"><div class="info-item-1">上一篇</div><div class="info-item-2">黑马点评项目Day1</div></div><div class="info-2"><div class="info-item-1">黑马点评项目（登录验证、优化）</div></div></div></a></nav></div><div class="aside-content" id="aside-content"><div class="card-widget card-info text-center"><div class="avatar-img"><img src="/img/avatar.png" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info-name">Hoopooo</div><div class="author-info-description">我的博客说欢迎光临 ~</div><div class="site-data"><a href="/archives/"><div class="headline">文章</div><div class="length-num">7</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">3</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">0</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/hoopooo"><i class="fab fa-github"></i><span>Follow Me</span></a><div class="card-info-social-icons"><a class="social-icon" href="https://github.com/hoopooo" target="_blank" title="Github"><i class="fab fa-github" style="color: #24292e;"></i></a><a class="social-icon" href="mailto:viego2002@163.com" target="_blank" title="Email"><i class="fas fa-envelope" style="color: #4a7dbe;"></i></a></div></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">This is my Blog</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%95%86%E6%88%B7%E6%9F%A5%E8%AF%A2%E7%BC%93%E5%AD%98"><span class="toc-text">商户查询缓存</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%BC%93%E5%AD%98%E6%9B%B4%E6%96%B0%E7%AD%96%E7%95%A5"><span class="toc-text">缓存更新策略</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%BC%93%E5%AD%98%E7%A9%BF%E9%80%8F"><span class="toc-text">缓存穿透</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%BC%93%E5%AD%98%E9%9B%AA%E5%B4%A9"><span class="toc-text">缓存雪崩</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%BC%93%E5%AD%98%E5%87%BB%E7%A9%BF"><span class="toc-text">缓存击穿</span></a></li></ol></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item"><a class="thumbnail" href="/2025/03/18/%E7%BC%93%E5%AD%98/" title="黑马点评Day2 缓存"><img src="https://picsum.photos/1920/1080" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="黑马点评Day2 缓存"/></a><div class="content"><a class="title" href="/2025/03/18/%E7%BC%93%E5%AD%98/" title="黑马点评Day2 缓存">黑马点评Day2 缓存</a><time datetime="2025-03-18T05:29:42.000Z" title="发表于 2025-03-18 13:29:42">2025-03-18</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2025/03/15/%E9%BB%91%E9%A9%AC%E7%82%B9%E8%AF%84%E9%A1%B9%E7%9B%AEDay1/" title="黑马点评项目Day1"><img src="https://picsum.photos/1920/1080" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="黑马点评项目Day1"/></a><div class="content"><a class="title" href="/2025/03/15/%E9%BB%91%E9%A9%AC%E7%82%B9%E8%AF%84%E9%A1%B9%E7%9B%AEDay1/" title="黑马点评项目Day1">黑马点评项目Day1</a><time datetime="2025-03-15T14:36:26.000Z" title="发表于 2025-03-15 22:36:26">2025-03-15</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2025/03/15/%E7%99%BB%E5%BD%95%E8%AE%A4%E8%AF%81%E6%A0%A1%E9%AA%8C%E6%8A%80%E6%9C%AF%E7%82%B9/" title="登录认证校验技术点"><img src="https://picsum.photos/1920/1080" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="登录认证校验技术点"/></a><div class="content"><a class="title" href="/2025/03/15/%E7%99%BB%E5%BD%95%E8%AE%A4%E8%AF%81%E6%A0%A1%E9%AA%8C%E6%8A%80%E6%9C%AF%E7%82%B9/" title="登录认证校验技术点">登录认证校验技术点</a><time datetime="2025-03-15T06:50:40.000Z" title="发表于 2025-03-15 14:50:40">2025-03-15</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2025/03/13/redis1/" title="Redis基础部分（安装，基本命令等）"><img src="https://picsum.photos/1920/1080" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="Redis基础部分（安装，基本命令等）"/></a><div class="content"><a class="title" href="/2025/03/13/redis1/" title="Redis基础部分（安装，基本命令等）">Redis基础部分（安装，基本命令等）</a><time datetime="2025-03-13T08:48:21.000Z" title="发表于 2025-03-13 16:48:21">2025-03-13</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2025/03/12/java/" title="Java 基础+集合+多线程+JVM知识点"><img src="https://picsum.photos/1920/1080" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="Java 基础+集合+多线程+JVM知识点"/></a><div class="content"><a class="title" href="/2025/03/12/java/" title="Java 基础+集合+多线程+JVM知识点">Java 基础+集合+多线程+JVM知识点</a><time datetime="2025-03-12T13:38:40.000Z" title="发表于 2025-03-12 21:38:40">2025-03-12</time></div></div></div></div></div></div></main><footer id="footer"><div id="footer-wrap"><div class="copyright">&copy;2019 - 2025 By Hoopooo</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo 7.3.0</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly 5.3.5</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="日间和夜间模式切换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><div class="js-pjax"></div><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></body></html>
